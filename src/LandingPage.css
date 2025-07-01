@@ -196,18 +196,97 @@
   }
 }
 @media (max-width: 600px) {
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+  }
+  .landing-root {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0;
+  }
   .landing-hero {
-    padding: 32px 2vw 16px 2vw;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 24px 2vw 12px 2vw;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
-  .hero-title {
-    font-size: 2rem;
+  .hero-content {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
-  .benefit-card, .how-step {
-    min-width: 140px;
-    max-width: 100vw;
-    padding: 18px 8px 14px 8px;
+  .hero-illustration {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    justify-content: center;
+  }
+  .benefit-cards {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0 2vw;
+    box-sizing: border-box;
+    overflow-x: visible;
+  }
+  .benefit-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 0 12px 0;
+    box-sizing: border-box;
+    padding: 16px 10px 12px 10px;
+    border-radius: 16px;
+  }
+  .landing-benefits {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 16px 2vw 0 2vw;
+    box-sizing: border-box;
+  }
+  .landing-how {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 16px 2vw 0 2vw;
+    box-sizing: border-box;
+  }
+  .how-steps {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .how-step {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 0 12px 0;
+    box-sizing: border-box;
+    padding: 16px 10px 12px 10px;
+    border-radius: 14px;
   }
   .landing-cta {
-    padding: 24px 2vw 0 2vw;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 16px 2vw 0 2vw;
+    box-sizing: border-box;
   }
 } 
