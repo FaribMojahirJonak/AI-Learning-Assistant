@@ -1,8 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate, useNavigationType } from 'react-router-dom';
 import LandingPage from './LandingPage';
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface QuizQuestion {
   question: string
@@ -26,6 +28,7 @@ function LearnPage() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
   const navType = useNavigationType()
+  const downloadRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (navType === 'POP') {
@@ -138,6 +141,254 @@ function LearnPage() {
     navigate('/learn')
   }
 
+  const downloadAssessment = async () => {
+    if (!downloadRef.current) {
+      console.error('Download ref is null')
+      alert('Failed to generate PDF. Please try again.')
+      return
+    }
+
+    try {
+      console.log('Starting PDF generation...')
+      
+      // Temporarily show the div for rendering
+      downloadRef.current.style.display = 'block'
+      downloadRef.current.style.position = 'absolute'
+      downloadRef.current.style.left = '-9999px'
+      downloadRef.current.style.top = '0'
+      
+      // Wait a bit for the content to render
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      const pageWidth = 210
+      const pageHeight = 297
+      const margin = 20
+      const contentWidth = pageWidth - (2 * margin)
+      const contentHeight = pageHeight - (2 * margin)
+      
+      let currentY = margin
+      let currentPage = 1
+      
+      // Add title with text wrapping to prevent overflow
+      pdf.setFontSize(20)
+      pdf.setTextColor(79, 140, 255)
+      pdf.setFont('helvetica', 'bold')
+      
+      const titleText = `AI Learning Assessment: ${topic}`
+      const titleLines = pdf.splitTextToSize(titleText, contentWidth - 20)
+      
+      // Center each line of the title
+      titleLines.forEach((line: string, index: number) => {
+        pdf.text(line, pageWidth / 2, currentY + (index * 8), { align: 'center' })
+      })
+      
+      currentY += (titleLines.length * 8) + 10
+      
+      // Add lesson content
+      if (lesson) {
+        pdf.setFontSize(16)
+        pdf.setTextColor(34, 34, 59)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('Lesson', margin, currentY)
+        currentY += 10
+        
+        pdf.setFontSize(12)
+        pdf.setTextColor(68, 68, 68)
+        pdf.setFont('helvetica', 'normal')
+        const lessonParagraphs = lesson.split('\n')
+        
+        for (const paragraph of lessonParagraphs) {
+          if (paragraph.trim()) {
+            // Use proper padding for lesson text to prevent overflow
+            const lines = pdf.splitTextToSize(paragraph, contentWidth - 40)
+            
+            // Check if we need a new page
+            if (currentY + (lines.length * 5) > pageHeight - margin) {
+              pdf.addPage()
+              currentPage++
+              currentY = margin
+            }
+            
+            pdf.text(lines, margin + 20, currentY)
+            currentY += lines.length * 5 + 5
+          }
+        }
+        currentY += 10
+      }
+      
+      // Add quiz questions
+      if (quiz.length > 0) {
+        pdf.setFontSize(16)
+        pdf.setTextColor(34, 34, 59)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('Quiz', margin, currentY)
+        currentY += 10
+        
+        for (let questionIndex = 0; questionIndex < quiz.length; questionIndex++) {
+          const question = quiz[questionIndex]
+          
+          // Calculate actual question height based on content with proper padding
+          const questionTextLines = pdf.splitTextToSize(question.question, contentWidth - 40)
+          const questionTextHeight = questionTextLines.length * 5
+          
+          // Calculate total options height with proper padding
+          let totalOptionsHeight = 0
+          question.options.forEach((option, optionIndex) => {
+            let optionText = `${String.fromCharCode(65 + optionIndex)}. ${option}`
+            if (answers[questionIndex] === option) optionText += ' (Selected)'
+            if (option === question.correctAnswer) optionText += ' ✓'
+            const optionLines = pdf.splitTextToSize(optionText, contentWidth - 50)
+            totalOptionsHeight += optionLines.length * 5 + 5
+          })
+          
+          const feedbackHeight = showResults ? 20 : 0
+          const questionHeight = 20 + questionTextHeight + totalOptionsHeight + feedbackHeight + 15
+          
+          // Check if we need a new page for this question
+          if (currentY + questionHeight > pageHeight - margin) {
+            pdf.addPage()
+            currentPage++
+            currentY = margin
+          }
+          
+          // Question card background with better styling
+          pdf.setFillColor(248, 250, 252)
+          pdf.setDrawColor(224, 231, 255)
+          pdf.rect(margin, currentY - 8, contentWidth, questionHeight + 8)
+          pdf.setFillColor(248, 250, 252)
+          pdf.rect(margin, currentY - 8, contentWidth, questionHeight + 8, 'F')
+          pdf.setDrawColor(224, 231, 255)
+          pdf.rect(margin, currentY - 8, contentWidth, questionHeight + 8, 'S')
+          
+          // Question number and text
+          pdf.setFontSize(14)
+          pdf.setTextColor(34, 34, 59)
+          pdf.setFont('helvetica', 'bold')
+          pdf.text(`Question ${questionIndex + 1}`, margin + 8, currentY)
+          currentY += 8
+          
+          pdf.setFontSize(12)
+          pdf.setTextColor(68, 68, 68)
+          pdf.setFont('helvetica', 'normal')
+          pdf.text(questionTextLines, margin + 20, currentY)
+          currentY += questionTextHeight + 8
+          
+          // Options with consistent font
+          question.options.forEach((option, optionIndex) => {
+            const isSelected = answers[questionIndex] === option
+            const isCorrect = option === question.correctAnswer
+            
+            // Split option text to prevent overflow with proper padding
+            let optionText = `${String.fromCharCode(65 + optionIndex)}. ${option}`
+            if (isSelected) optionText += ' (Selected)'
+            if (isCorrect) optionText += ' ✓'
+            
+            const optionLines = pdf.splitTextToSize(optionText, contentWidth - 50)
+            const optionHeight = optionLines.length * 5 + 5
+            
+            pdf.setFontSize(11)
+            pdf.setFont('helvetica', 'normal')
+            
+            if (isSelected) {
+              pdf.setTextColor(79, 140, 255)
+              pdf.setFont('helvetica', 'bold')
+            } else {
+              pdf.setTextColor(68, 68, 68)
+              pdf.setFont('helvetica', 'normal')
+            }
+            
+            // Draw option text with proper line breaks and padding
+            optionLines.forEach((line: string, lineIndex: number) => {
+              pdf.text(line, margin + 25, currentY + 2 + (lineIndex * 5))
+            })
+            
+            currentY += optionHeight
+          })
+          
+          // Answer feedback
+          if (showResults) {
+            currentY += 5
+            const isCorrect = answers[questionIndex] === question.correctAnswer
+            
+            // Create shorter feedback text to prevent overflow
+            let feedbackText = isCorrect 
+              ? '✓ Correct!' 
+              : `✗ Incorrect. Correct answer: ${question.correctAnswer}`
+            
+            // Use very small width for feedback to prevent overflow
+            const feedbackWidth = Math.min(contentWidth - 80, 80)
+            const feedbackLines = pdf.splitTextToSize(feedbackText, feedbackWidth)
+            const feedbackHeight = feedbackLines.length * 5 + 8
+            
+            pdf.setTextColor(isCorrect ? 21 : 153, isCorrect ? 128 : 27, isCorrect ? 61 : 27)
+            pdf.setFont('helvetica', 'bold')
+            pdf.setFontSize(9)
+            
+            // Draw feedback text with maximum padding from edges
+            feedbackLines.forEach((line: string, lineIndex: number) => {
+              pdf.text(line, margin + 40, currentY + 3 + (lineIndex * 5))
+            })
+            
+            currentY += feedbackHeight + 5
+          }
+          
+          currentY += 8
+        }
+      }
+      
+      // Add results
+      if (showResults) {
+        // Check if we need a new page for results
+        if (currentY + 40 > pageHeight - margin) {
+          pdf.addPage()
+          currentPage++
+          currentY = margin
+        }
+        
+        // Results background
+        pdf.setFillColor(243, 248, 255)
+        pdf.setDrawColor(161, 196, 253)
+        pdf.rect(margin, currentY, contentWidth, 35, 'F')
+        pdf.rect(margin, currentY, contentWidth, 35, 'S')
+        
+        // Results text
+        pdf.setFontSize(16)
+        pdf.setTextColor(34, 34, 59)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('Quiz Results', pageWidth / 2, currentY + 8, { align: 'center' })
+        
+        pdf.setFontSize(12)
+        pdf.setTextColor(68, 68, 68)
+        pdf.setFont('helvetica', 'normal')
+        pdf.text(`You got ${score} out of ${quiz.length} questions correct!`, pageWidth / 2, currentY + 18, { align: 'center' })
+        
+        pdf.setFontSize(20)
+        pdf.setTextColor(161, 196, 253)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text(`${Math.round((score / quiz.length) * 100)}%`, pageWidth / 2, currentY + 28, { align: 'center' })
+      }
+      
+      const filename = `AI_Assessment_${topic.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`
+      pdf.save(filename)
+      
+      console.log('PDF generated successfully')
+      
+      // Hide the div again
+      downloadRef.current.style.display = 'none'
+      
+    } catch (error: any) {
+      console.error('Error generating PDF:', error)
+      
+      // Hide the div in case of error
+      if (downloadRef.current) {
+        downloadRef.current.style.display = 'none'
+      }
+      
+      alert(`Failed to generate PDF: ${error.message || 'Unknown error'}`)
+    }
+  }
+
   return (
     <div className="app-root">
       <div className="app">
@@ -184,6 +435,102 @@ function LearnPage() {
               </div>
             </div>
           )}
+          
+          {/* Hidden div for PDF generation */}
+          <div ref={downloadRef} style={{ 
+            display: 'none', 
+            backgroundColor: 'white', 
+            padding: '20px',
+            width: '800px',
+            maxWidth: '800px',
+            boxSizing: 'border-box',
+            wordWrap: 'break-word',
+            overflowWrap: 'break-word'
+          }}>
+            <h1 style={{ color: '#4f8cff', textAlign: 'center', marginBottom: '20px', fontSize: '24px' }}>
+              AI Learning Assessment: {topic}
+            </h1>
+            
+            {lesson && (
+              <div style={{ marginBottom: '30px' }}>
+                <h2 style={{ color: '#22223b', marginBottom: '15px', fontSize: '20px' }}>Lesson</h2>
+                <div style={{ lineHeight: '1.6', color: '#444', fontSize: '14px' }}>
+                  {lesson.split('\n').map((paragraph, i) => (
+                    <p key={i} style={{ marginBottom: '10px', wordWrap: 'break-word', overflowWrap: 'break-word' }}>{paragraph}</p>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {quiz.length > 0 && (
+              <div style={{ marginBottom: '30px' }}>
+                <h2 style={{ color: '#22223b', marginBottom: '15px', fontSize: '20px' }}>Quiz</h2>
+                {quiz.map((question, questionIndex) => (
+                  <div key={questionIndex} style={{ 
+                    marginBottom: '20px', 
+                    padding: '15px', 
+                    border: '1px solid #e0e7ff', 
+                    borderRadius: '8px',
+                    wordWrap: 'break-word',
+                    overflowWrap: 'break-word'
+                  }}>
+                    <h3 style={{ color: '#22223b', marginBottom: '10px', fontSize: '16px' }}>Question {questionIndex + 1}</h3>
+                    <p style={{ marginBottom: '10px', color: '#444', fontSize: '14px', wordWrap: 'break-word', overflowWrap: 'break-word' }}>{question.question}</p>
+                    <div style={{ marginBottom: '10px' }}>
+                      {question.options.map((option, optionIndex) => (
+                        <div key={optionIndex} style={{ marginBottom: '5px', padding: '5px' }}>
+                          <span style={{ 
+                            fontWeight: answers[questionIndex] === option ? 'bold' : 'normal',
+                            color: answers[questionIndex] === option ? '#4f8cff' : '#444',
+                            fontSize: '14px',
+                            wordWrap: 'break-word',
+                            overflowWrap: 'break-word'
+                          }}>
+                            {String.fromCharCode(65 + optionIndex)}. {option}
+                            {answers[questionIndex] === option && ' (Selected)'}
+                            {option === question.correctAnswer && ' ✓'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    {showResults && (
+                      <div style={{ 
+                        padding: '8px', 
+                        borderRadius: '4px', 
+                        backgroundColor: answers[questionIndex] === question.correctAnswer ? '#d4f8e8' : '#ffe0e0',
+                        color: answers[questionIndex] === question.correctAnswer ? '#2d6a4f' : '#b00020',
+                        fontWeight: 'bold',
+                        fontSize: '14px'
+                      }}>
+                        {answers[questionIndex] === question.correctAnswer
+                          ? '✓ Correct!'
+                          : `✗ Incorrect. The correct answer is: ${question.correctAnswer}`}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {showResults && (
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '20px', 
+                border: '2px solid #a1c4fd', 
+                borderRadius: '8px',
+                backgroundColor: '#f3f8ff'
+              }}>
+                <h3 style={{ color: '#22223b', marginBottom: '10px', fontSize: '18px' }}>Quiz Results</h3>
+                <p style={{ fontSize: '16px', marginBottom: '5px' }}>
+                  You got {score} out of {quiz.length} questions correct!
+                </p>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#a1c4fd', marginBottom: '10px' }}>
+                  {Math.round((score / quiz.length) * 100)}%
+                </div>
+              </div>
+            )}
+          </div>
+
           {lesson && (
             <div className="lesson-card card">
               <h2>Lesson: {topic}</h2>
@@ -243,8 +590,21 @@ function LearnPage() {
                   <div className="score-percentage">
                     {Math.round((score / quiz.length) * 100)}%
                   </div>
-                  <button onClick={resetQuiz} className="reset-btn">Start Over</button>
-                  <button onClick={changeTopic} className="change-topic-btn">Change Topic</button>
+                  
+                  {/* All buttons side by side */}
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '10px', 
+                    justifyContent: 'center', 
+                    flexWrap: 'wrap',
+                    marginTop: '20px'
+                  }}>
+                    <button onClick={resetQuiz} className="reset-btn">Start Over</button>
+                    <button onClick={changeTopic} className="change-topic-btn">Change Topic</button>
+                    <button onClick={downloadAssessment} className="download-btn">
+                      📄 Download Assessment PDF
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
