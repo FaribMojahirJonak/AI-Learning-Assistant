@@ -1,0 +1,213 @@
+.landing-root {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 60%, #a1c4fd 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  color: #22223b;
+}
+
+.landing-hero {
+  width: 100vw;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 64px 7vw 32px 7vw;
+  position: relative;
+  gap: 32px;
+  box-sizing: border-box;
+}
+.hero-content {
+  flex: 1;
+  min-width: 260px;
+  z-index: 1;
+}
+.hero-title {
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #4f8cff 0%, #7f53ac 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 18px;
+  line-height: 1.18;
+}
+.hero-tagline {
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 32px;
+  max-width: 480px;
+}
+.hero-cta {
+  display: inline-block;
+  padding: 18px 44px;
+  border-radius: 24px;
+  background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
+  color: #22223b;
+  font-size: 1.18rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 2px 12px rgba(160, 160, 200, 0.10);
+  transition: background 0.3s, box-shadow 0.3s, transform 0.15s;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+.hero-cta:hover {
+  background: linear-gradient(90deg, #c2e9fb 0%, #a1c4fd 100%);
+  box-shadow: 0 4px 24px rgba(160, 160, 200, 0.16);
+  transform: scale(1.04);
+}
+.hero-illustration {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+}
+
+.landing-benefits {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 32px auto;
+  padding: 32px 24px 0 24px;
+  text-align: center;
+}
+.landing-benefits h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 32px;
+  color: #4f8cff;
+}
+.benefit-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  justify-content: center;
+}
+.benefit-card {
+  background: rgba(255,255,255,0.95);
+  border-radius: 24px;
+  box-shadow: 0 2px 12px 0 rgba(160, 160, 200, 0.10);
+  padding: 32px 28px 28px 28px;
+  min-width: 220px;
+  max-width: 270px;
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.3s, transform 0.15s;
+}
+.benefit-card:hover {
+  box-shadow: 0 6px 32px 0 rgba(160, 160, 200, 0.16);
+  transform: translateY(-6px) scale(1.03);
+}
+.benefit-icon {
+  font-size: 2.2rem;
+  margin-bottom: 16px;
+}
+.benefit-card h3 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #4f8cff;
+}
+.benefit-card p {
+  font-size: 1rem;
+  color: #444;
+}
+
+.landing-how {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 32px auto;
+  padding: 32px 24px 0 24px;
+  text-align: center;
+}
+.landing-how h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 32px;
+  color: #7f53ac;
+}
+.how-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  justify-content: center;
+}
+.how-step {
+  background: rgba(255,255,255,0.95);
+  border-radius: 20px;
+  box-shadow: 0 2px 12px 0 rgba(160, 160, 200, 0.10);
+  padding: 28px 22px 22px 22px;
+  min-width: 180px;
+  max-width: 220px;
+  flex: 1 1 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.3s, transform 0.15s;
+}
+.how-step:hover {
+  box-shadow: 0 6px 32px 0 rgba(160, 160, 200, 0.16);
+  transform: translateY(-4px) scale(1.03);
+}
+.how-icon {
+  font-size: 2rem;
+  margin-bottom: 14px;
+}
+.how-step p {
+  font-size: 1rem;
+  color: #444;
+}
+
+.landing-cta {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 48px auto;
+  padding: 32px 24px 0 24px;
+  text-align: center;
+}
+.landing-cta h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: #4f8cff;
+}
+
+@media (max-width: 900px) {
+  .landing-hero {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 48px 8vw 24px 8vw;
+  }
+  .hero-illustration {
+    margin-top: 24px;
+  }
+  .benefit-cards, .how-steps {
+    gap: 18px;
+  }
+}
+@media (max-width: 600px) {
+  .landing-hero {
+    padding: 32px 2vw 16px 2vw;
+  }
+  .hero-title {
+    font-size: 2rem;
+  }
+  .benefit-card, .how-step {
+    min-width: 140px;
+    max-width: 100vw;
+    padding: 18px 8px 14px 8px;
+  }
+  .landing-cta {
+    padding: 24px 2vw 0 2vw;
+  }
+} 
