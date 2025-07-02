@@ -219,7 +219,9 @@ body::after {
   word-wrap: break-word;
   overflow-wrap: break-word;
   max-width: 100%;
+  width: 100%;
   box-sizing: border-box;
+  min-height: fit-content;
 }
 .question-card h3 {
   font-size: 1.1rem;
