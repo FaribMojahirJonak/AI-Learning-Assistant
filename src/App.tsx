@@ -370,7 +370,35 @@ function LearnPage() {
       }
       
       const filename = `AI_Assessment_${topic.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`
-      pdf.save(filename)
+      
+      // Check if we're in an in-app browser (Facebook, Instagram, etc.)
+      const isInAppBrowser = /FBAN|FBAV|Instagram|Line|WhatsApp|Telegram|Twitter|LinkedIn/i.test(navigator.userAgent)
+      
+      if (isInAppBrowser) {
+        // For in-app browsers, use blob URL method
+        const pdfBlob = pdf.output('blob')
+        const blobUrl = URL.createObjectURL(pdfBlob)
+        
+        // Create a temporary link and trigger download
+        const link = document.createElement('a')
+        link.href = blobUrl
+        link.download = filename
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        
+        // Clean up blob URL after a delay
+        setTimeout(() => {
+          URL.revokeObjectURL(blobUrl)
+        }, 1000)
+        
+        // Show success message for in-app browsers
+        alert('PDF generated successfully! Please check your downloads folder.')
+      } else {
+        // For regular browsers, use the standard method
+        pdf.save(filename)
+      }
       
       console.log('PDF generated successfully')
       
