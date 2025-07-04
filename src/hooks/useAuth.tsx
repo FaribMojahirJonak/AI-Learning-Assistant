@@ -11,7 +11,7 @@ export type User = {
 // Auth context type
 interface AuthContextType {
   user: User | null;
-  signUp: (email: string, password: string, redirectTo?: string) => Promise<any>;
+  signUp: (email: string, password: string) => Promise<any>;
   signIn: (email: string, password: string) => Promise<any>;
   signOut: () => Promise<void>;
 }
@@ -60,14 +60,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user]);
 
-  const signUp = async (email: string, password: string, redirectTo?: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectTo || 'https://ai-learning-assistant-hazel.vercel.app/'
-      }
-    });
+  const signUp = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signUp({ email, password });
     return { data, error };
   };
 

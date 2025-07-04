@@ -39,7 +39,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
     try {
       const { error } = isSignUp 
-        ? await signUp(email, password, 'https://ai-learning-assistant-hazel.vercel.app/')
+        ? await signUp(email, password)
         : await signIn(email, password)
 
       if (error) {
