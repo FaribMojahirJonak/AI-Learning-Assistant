@@ -349,22 +349,38 @@ body::after {
 }
 
 .submit-btn, .reset-btn {
-  padding: 14px 32px;
-  border: none;
+  padding: 10px 28px;
   border-radius: 18px;
-  background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
-  color: #22223b;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 400;
+  font-size: 1rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(160, 160, 200, 0.08);
+  background: rgba(255, 255, 255, 0.85);
+  color: #3a4668;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 8px 32px 0 rgba(161,196,253,0.18), 
+    0 4px 16px 0 rgba(161,196,253,0.12),
+    0 2px 8px 0 rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px) saturate(1.3);
+  transition: background 0.25s, color 0.18s, box-shadow 0.25s, transform 0.18s;
   margin-top: 18px;
-  transition: background 0.3s, box-shadow 0.3s, transform 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 40px;
 }
 .submit-btn:hover:not(:disabled), .reset-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, #c2e9fb 0%, #a1c4fd 100%);
-  box-shadow: 0 4px 16px rgba(160, 160, 200, 0.16);
-  transform: scale(1.03);
+  background: rgba(255, 255, 255, 0.95);
+  color: #6b5ca5;
+  box-shadow: 
+    0 12px 40px 0 rgba(161,196,253,0.25), 
+    0 6px 20px 0 rgba(161,196,253,0.18),
+    0 3px 12px 0 rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px) scale(1.04);
 }
 .submit-btn:disabled {
   opacity: 0.6;
@@ -795,24 +811,39 @@ body::after {
 }
 
 .change-topic-btn {
-  padding: 14px 32px;
-  border: none;
+  padding: 10px 28px;
   border-radius: 18px;
-  background: linear-gradient(90deg, #7f53ac 0%, #4f8cff 100%);
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 400;
+  font-size: 1rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(127, 83, 172, 0.10);
+  background: rgba(255, 255, 255, 0.85);
+  color: #3a4668;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 8px 32px 0 rgba(161,196,253,0.18), 
+    0 4px 16px 0 rgba(161,196,253,0.12),
+    0 2px 8px 0 rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px) saturate(1.3);
+  transition: background 0.25s, color 0.18s, box-shadow 0.25s, transform 0.18s;
   margin-top: 18px;
   margin-left: 16px;
-  transition: background 0.3s, box-shadow 0.3s, transform 0.15s;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 40px;
 }
 .change-topic-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, #4f8cff 0%, #7f53ac 100%);
-  box-shadow: 0 4px 16px rgba(127, 83, 172, 0.16);
-  transform: scale(1.03);
+  background: rgba(255, 255, 255, 0.95);
+  color: #6b5ca5;
+  box-shadow: 
+    0 12px 40px 0 rgba(161,196,253,0.25), 
+    0 6px 20px 0 rgba(161,196,253,0.18),
+    0 3px 12px 0 rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px) scale(1.04);
 }
 .change-topic-btn:disabled {
   opacity: 0.6;
