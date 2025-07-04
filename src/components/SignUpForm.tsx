@@ -14,7 +14,7 @@ export default function SignUpForm() {
     e.preventDefault();
     setError('');
     setSuccess('');
-    const { data, error } = await signUp(email, password);
+    const { data, error } = await signUp(email, password, 'https://ai-learning-assistant-hazel.vercel.app/');
     console.log('SignUp result:', { data, error });
     if (error) {
       setError(error.message);
