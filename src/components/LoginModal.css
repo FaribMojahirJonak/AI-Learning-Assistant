@@ -48,40 +48,38 @@
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
-  background: rgba(245, 248, 255, 0.45);
-  backdrop-filter: blur(12px) saturate(1.2);
-  border: 1.5px solid rgba(180, 200, 255, 0.18);
-  font-size: 1.25rem;
-  color: #3a4668;
-  width: 2.25rem;
-  height: 2.25rem;
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  color: rgba(255, 255, 255, 1);
+  width: auto;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
   cursor: pointer;
   transition: all 0.25s ease;
-  font-weight: 400;
-  box-shadow: 0 4px 24px 0 rgba(161,196,253,0.13), 0 1.5px 8px 0 rgba(161,196,253,0.10);
+  font-weight: 300;
+  box-shadow: none;
+  flex-shrink: 0;
+  padding: 0.5rem;
 }
 
 .login-modal-close:hover {
-  background: linear-gradient(90deg, rgba(210,225,255,0.55) 0%, rgba(180,210,255,0.45) 100%);
-  color: #6b5ca5;
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 8px 32px 0 rgba(127,83,172,0.13), 0 2px 12px 0 rgba(161,196,253,0.13);
+  background: none;
+  color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
+  box-shadow: none;
 }
 
 .login-modal-title {
   text-align: center;
   font-size: 1.875rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #4f8cff 0%, #7f53ac 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: 700;
+  color: rgba(240, 248, 255, 1);
   margin-bottom: 1.75rem;
   letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(240, 248, 255, 0.3);
 }
 
 .login-modal-form {
@@ -91,10 +89,10 @@
 .login-modal-label {
   display: block;
   margin-bottom: 0.75rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1rem;
-  letter-spacing: 0.5px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  letter-spacing: 0.2px;
 }
 
 .login-modal-input {
@@ -103,12 +101,13 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.385);
   backdrop-filter: blur(10px);
   color: white;
   transition: all 0.3s ease;
   margin-bottom: 1.25rem;
   box-sizing: border-box;
+  caret-color: #4f8cff;
 }
 
 .login-modal-input::placeholder {
@@ -118,7 +117,7 @@
 .login-modal-input:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.35);
   box-shadow: 
     0 0 0 3px rgba(255, 255, 255, 0.1),
     0 4px 12px rgba(0, 0, 0, 0.1);
@@ -150,13 +149,14 @@
   font-size: 1rem;
   font-weight: 400;
   cursor: pointer;
-  background: linear-gradient(90deg, #e0e7ff 0%, #a1c4fd 100%);
-  color: #5a4fcf;
-  border: none;
+  background: rgba(255, 255, 255, 1);
+  backdrop-filter: blur(12px) saturate(1.2);
+  color: #3a4668;
+  border: 1.5px solid rgba(180, 200, 255, 0.18);
   margin-bottom: 0.875rem;
   transition: all 0.25s ease;
   min-height: 44px;
-  box-shadow: 0 4px 24px 0 rgba(161,196,253,0.18), 0 2px 12px 0 rgba(127,83,172,0.10);
+  box-shadow: 0 4px 24px 0 rgba(161,196,253,0.13), 0 1.5px 8px 0 rgba(161,196,253,0.10);
   position: relative;
   overflow: hidden;
   letter-spacing: 0.5px;
@@ -166,7 +166,7 @@
 }
 
 .login-modal-btn:hover {
-  background: linear-gradient(90deg, rgba(210,225,255,0.55) 0%, rgba(180,210,255,0.45) 100%);
+  background: rgba(255, 255, 255, 1);
   color: #6b5ca5;
   transform: translateY(-2px) scale(1.04);
   box-shadow: 0 8px 32px 0 rgba(127,83,172,0.13), 0 2px 12px 0 rgba(161,196,253,0.13);
@@ -185,7 +185,7 @@
   font-size: 1rem;
   font-weight: 400;
   cursor: pointer;
-  background: rgba(245, 248, 255, 0.45);
+  background: rgba(255, 255, 255, 1);
   color: #3a4668;
   border: 1.5px solid rgba(180, 200, 255, 0.18);
   margin-bottom: 0.875rem;
@@ -202,7 +202,7 @@
 }
 
 .login-modal-btn-google:hover {
-  background: linear-gradient(90deg, rgba(210,225,255,0.55) 0%, rgba(180,210,255,0.45) 100%);
+  background: rgba(255, 255, 255, 1);
   color: #6b5ca5;
   transform: translateY(-2px) scale(1.04);
   box-shadow: 0 8px 32px 0 rgba(127,83,172,0.13), 0 2px 12px 0 rgba(161,196,253,0.13);
