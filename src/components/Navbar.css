@@ -45,13 +45,185 @@
   filter: drop-shadow(0 2px 8px rgba(127,83,172,0.10));
 }
 .navbar-title {
-  font-weight: 900;
-  background: linear-gradient(90deg, #4f8cff 0%, #7f53ac 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
-  letter-spacing: -0.5px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #22223b;
+  margin-left: 8px;
+}
+
+/* Hamburger Menu */
+.navbar-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+  outline: none;
+}
+
+.navbar-hamburger span {
+  width: 100%;
+  height: 3px;
+  background: #22223b;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.navbar-hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.navbar-hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Mobile Menu Overlay */
+.navbar-mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.navbar-mobile-menu.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.navbar-mobile-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(1.2);
+  border-left: 1.5px solid rgba(161,196,253,0.18);
+  box-shadow: -8px 0 32px rgba(161,196,253,0.15);
+  padding: 100px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.navbar-mobile-menu.open .navbar-mobile-content {
+  transform: translateX(0);
+}
+
+.navbar-mobile-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.navbar-mobile-link {
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: #3a4668;
+  background: rgba(245, 248, 255, 0.6);
+  border: 1.5px solid rgba(161,196,253,0.15);
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.navbar-mobile-link:hover,
+.navbar-mobile-link.active {
+  background: linear-gradient(135deg, rgba(161,196,253,0.2) 0%, rgba(127,83,172,0.15) 100%);
+  color: #5a4fcf;
+  transform: translateX(4px);
+}
+
+.navbar-mobile-auth {
+  margin-top: auto;
+}
+
+.navbar-mobile-auth-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.navbar-mobile-btn {
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  background: rgba(245, 248, 255, 0.6);
+  color: #3a4668;
+  border: 1.5px solid rgba(161,196,253,0.15);
+  transition: all 0.25s ease;
+  text-align: center;
+  outline: none;
+}
+
+.navbar-mobile-btn:hover {
+  background: linear-gradient(135deg, rgba(161,196,253,0.2) 0%, rgba(127,83,172,0.15) 100%);
+  color: #5a4fcf;
+  transform: translateY(-2px);
+}
+
+.navbar-mobile-btn-primary {
+  background: linear-gradient(135deg, rgba(161,196,253,0.3) 0%, rgba(127,83,172,0.25) 100%);
+  color: #5a4fcf;
+  border: 1.5px solid rgba(161,196,253,0.25);
+}
+
+.navbar-mobile-btn-logout {
+  background: rgba(255, 235, 235, 0.8);
+  color: #e63946;
+  border: 1.5px solid rgba(230, 57, 70, 0.2);
+}
+
+.navbar-mobile-btn-logout:hover {
+  background: rgba(230, 57, 70, 0.1);
+  color: #d32f2f;
+}
+
+.navbar-mobile-user {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.navbar-mobile-user-info {
+  padding: 16px 20px;
+  background: rgba(245, 248, 255, 0.8);
+  border-radius: 16px;
+  border: 1.5px solid rgba(161,196,253,0.15);
+}
+
+.navbar-mobile-user-email {
+  font-size: 0.9rem;
+  color: #3a4668;
+  word-break: break-all;
+}
+
+/* Desktop Only Elements */
+.desktop-only {
+  display: flex;
 }
 
 .navbar-links {
@@ -73,6 +245,7 @@
   transition: background 0.25s, color 0.18s, box-shadow 0.25s, transform 0.18s;
   position: relative;
   overflow: hidden;
+  outline: none;
 }
 .navbar-link:hover {
   background: linear-gradient(90deg, rgba(210,225,255,0.55) 0%, rgba(180,210,255,0.45) 100%);
@@ -115,6 +288,7 @@
   position: relative;
   overflow: hidden;
   text-decoration: none;
+  outline: none;
 }
 .navbar-btn:hover {
   background: linear-gradient(90deg, rgba(210,225,255,0.55) 0%, rgba(180,210,255,0.45) 100%);
@@ -135,6 +309,42 @@
   transform: translateY(-2px) scale(1.04);
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 20px;
+  }
+  
+  .desktop-only {
+    display: none;
+  }
+  
+  .navbar-hamburger {
+    display: flex;
+  }
+  
+  .navbar-logo-icon {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 16px;
+    height: 64px;
+  }
+  
+  .navbar-logo-icon {
+    font-size: 1.6rem;
+  }
+  
+  .navbar-mobile-content {
+    width: 100vw;
+    padding: 80px 20px 20px 20px;
+  }
+}
+
+/* Existing styles for user dropdown and other elements */
 @media (max-width: 900px) {
   .navbar-container {
     padding: 0 18px;
@@ -198,23 +408,21 @@
   font-size: 1rem;
   font-weight: 400 !important;
   padding: 12px 24px;
-  margin: 2px 0;
-  box-shadow: 0 2px 12px 0 rgba(161,196,253,0.10);
-  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.15s;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-align: left;
+  width: 100%;
+  outline: none;
 }
 .navbar-user-dropdown-btn:hover {
-  background: linear-gradient(90deg, #e0e7ff 0%, #a1c4fd 100%);
-  color: #7f53ac;
-  box-shadow: 0 4px 18px 0 rgba(127,83,172,0.13);
-  transform: translateY(-1px) scale(1.03);
+  background: rgba(161,196,253,0.15);
+  color: #5a4fcf;
 }
 .navbar-user-dropdown-btn.logout {
   color: #e63946;
-  background: rgba(255,240,243,0.55);
-  border: 1.5px solid #fee2e2;
+  border-color: rgba(230,57,70,0.2);
 }
 .navbar-user-dropdown-btn.logout:hover {
-  background: linear-gradient(90deg, #fee2e2 0%, #fecaca 100%);
-  color: #b00020;
-  box-shadow: 0 4px 18px 0 rgba(220,38,38,0.13);
+  background: rgba(230,57,70,0.1);
+  color: #d32f2f;
 } 

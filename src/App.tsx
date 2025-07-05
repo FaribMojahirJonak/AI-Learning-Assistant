@@ -544,6 +544,17 @@ function LearnPage() {
 
 export default function App() {
   useEffect(() => {
+    // Clean up URL hash after authentication redirects
+    const cleanUrlHash = () => {
+      if (window.location.hash && window.location.hash.includes('access_token')) {
+        // Remove the hash from URL after successful authentication
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    };
+
+    // Check for auth hash on mount
+    cleanUrlHash();
+
     // Scroll to top on page reload
     const handleBeforeUnload = () => {
       window.scrollTo(0, 0);
