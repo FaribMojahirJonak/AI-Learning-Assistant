@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { LoginModal } from './LoginModal';
 import { UserProfileDropdown } from './UserProfileDropdown';
 import './Navbar.css';
+import quizenceLogo from '../assets/quizence-logo.png';
 
 export const Navbar: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -31,7 +32,7 @@ export const Navbar: React.FC = () => {
       <nav className="navbar-root">
         <div className="navbar-container">
           <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
-            <span className="navbar-logo-icon">📝</span>
+            <img src={quizenceLogo} alt="Quizence Logo" className="navbar-logo-img" width={36} height={36} />
             <span className="navbar-title">Quizence</span>
           </Link>
 
