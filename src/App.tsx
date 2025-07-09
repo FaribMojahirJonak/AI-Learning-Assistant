@@ -9,6 +9,7 @@ import { Navbar } from './components/Navbar';
 import { supabase } from './supabaseClient';
 import { useAuth } from './hooks/useAuth';
 import { UserProfile } from './components/UserProfile';
+import { ProfileSettings } from './components/ProfileSettings';
 import ReviewQuiz from './components/ReviewQuiz';
 
 interface QuizQuestion {
@@ -201,7 +202,6 @@ function LearnPage() {
         
         if (profileErr && profileErr.code === 'PGRST116') {
           // Profile doesn't exist, create it
-          console.log('Creating user profile for:', user.id);
           const { error: createErr } = await supabase
             .from('user_profiles')
             .insert([{ 
@@ -209,10 +209,11 @@ function LearnPage() {
               full_name: user.email.split('@')[0] 
             }]);
           if (createErr) {
-            console.log('Profile creation error:', createErr);
+            console.error('Profile creation error:', createErr);
           }
-        } else if (profileErr) {
-          console.log('Profile check error:', profileErr);
+        }
+        else if (profileErr) {
+          console.error('Profile check error:', profileErr);
         }
 
         // Check if result already exists for this user/quiz
@@ -220,10 +221,13 @@ function LearnPage() {
           .from('results')
           .select('id')
           .eq('user_id', user.id)
-          .eq('quiz_id', quizId)
-          .single();
+          .eq('quiz_id', quizId);
         
-        if (!existing) {
+        if (existErr) {
+          console.error('Error checking existing result:', existErr);
+        }
+        
+        if (!existing || existing.length === 0) {
           const { error: insertErr } = await supabase.from('results').insert([
             {
               user_id: user.id,
@@ -233,15 +237,13 @@ function LearnPage() {
             }
           ]);
           if (insertErr) {
-            console.log('Insert error:', insertErr);
-          } else {
-            console.log('Result inserted successfully');
+            console.error('Insert error:', insertErr);
           }
         } else {
-          console.log('Result already exists, not inserting');
+          // Result already exists, skip insertion
         }
       } catch (error) {
-        console.log('Error in result handling:', error);
+        console.error('Error in result handling:', error);
       }
       // --- PDF GENERATION AND UPLOAD ---
       
@@ -579,6 +581,7 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/learn" element={<LearnPage />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/settings" element={<ProfileSettings />} />
           <Route path="/review/:topic" element={<ReviewQuiz />} />
         </Routes>
       </div>

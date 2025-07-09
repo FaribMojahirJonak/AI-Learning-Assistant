@@ -141,7 +141,7 @@
 .userprofile-email {
   color: #64748b;
   font-size: 1.01rem;
-  margin-bottom: 0;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -150,6 +150,18 @@
   line-height: 1.2;
   white-space: normal;
   max-width: 100%;
+}
+
+.userprofile-bio {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 0;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  line-height: 1.4;
+  text-align: center;
+  max-width: 100%;
+  word-wrap: break-word;
+  font-style: italic;
 }
 
 .userprofile-stats {

@@ -9,29 +9,34 @@ export default function SignUpForm() {
   const [fullName, setFullName] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     setError('');
-    setSuccess('');
-    const { data, error } = await signUp(email, password);
-    console.log('SignUp result:', { data, error });
-    if (error) {
-      setError(error.message);
-      return;
-    }
-    // Supabase may not return data.user if email confirmation is required
-    const userId = data.user?.id || data.session?.user?.id;
-    if (userId) {
-      const { error: profileError } = await createUserProfile(userId, fullName);
-      console.log('Profile creation result:', { profileError });
-      if (profileError) {
-        setError('Profile creation failed: ' + profileError.message);
-        return;
+
+    try {
+      const { data, error } = await signUp(email, password);
+      if (error) throw error;
+
+      if (data.user) {
+        // Create user profile
+        const { error: profileError } = await createUserProfile(data.user.id, fullName || email.split('@')[0]);
+
+        if (profileError) {
+          console.error('Profile creation error:', profileError);
+        }
       }
-      setSuccess('Sign up successful! Please check your email to confirm your account.');
-    } else {
-      setSuccess('Sign up successful! Please check your email to confirm your account. (Profile will be created after confirmation)');
+
+      setSuccess('Account created successfully! Please check your email to verify your account.');
+      setEmail('');
+      setPassword('');
+      setFullName('');
+    } catch (error: any) {
+      setError(error.message || 'Failed to create account');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,7 +45,9 @@ export default function SignUpForm() {
       <input className="input input-bordered w-full" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
       <input className="input input-bordered w-full" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
       <input className="input input-bordered w-full" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Full Name" />
-      <button className="btn btn-primary w-full" type="submit">Sign Up</button>
+      <button className="btn btn-primary w-full" type="submit" disabled={loading}>
+        {loading ? 'Creating Account...' : 'Sign Up'}
+      </button>
       {error && <div className="text-red-500">{error}</div>}
       {success && <div className="text-green-600">{success}</div>}
     </form>

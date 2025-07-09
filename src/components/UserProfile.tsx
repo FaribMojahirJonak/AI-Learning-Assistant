@@ -43,7 +43,7 @@ export const UserProfile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
-  const [pdfUrls, setPdfUrls] = useState<{ [quizId: string]: string }>({});
+  const [pdfUrls, setPdfUrls] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,14 +81,12 @@ export const UserProfile: React.FC = () => {
     const fetchPdfs = async () => {
       if (!user) return;
       const { data, error } = await supabase.from('pdfs').select('quiz_id, pdf_url, filename').eq('user_id', user.id);
-      console.log('PDF fetch result:', { data, error });
       if (data) {
-        const map: { [quizId: string]: string } = {};
+        const map: Record<string, string> = {};
         data.forEach((row: any) => { 
           if (row.quiz_id && row.pdf_url) map[row.quiz_id] = row.pdf_url; 
         });
         setPdfUrls(map);
-        console.log('Fetched PDF URLs:', map);
       }
       if (error) {
         console.error('PDF fetch error:', error);
@@ -128,10 +126,17 @@ export const UserProfile: React.FC = () => {
       <div className="userprofile-container">
         {/* Left: Profile & Stats */}
         <div className="userprofile-left">
-          <UserIcon />
+          {user.avatar_url ? (
+            <img src={user.avatar_url} alt="User avatar" className="userprofile-avatar" />
+          ) : (
+            <UserIcon />
+          )}
           <div className="userprofile-userinfo" style={{textAlign: 'left'}}>
-            <div className="userprofile-username">{user.email.split('@')[0]}</div>
+            <div className="userprofile-username">{user.full_name || user.email.split('@')[0]}</div>
             <div className="userprofile-email">{user.email}</div>
+            <div className="userprofile-bio">
+              {user.bio && user.bio.trim() !== '' ? user.bio : 'No bio provided yet.'}
+            </div>
           </div>
           <div className="userprofile-stats">
             <div className="userprofile-stat-row">

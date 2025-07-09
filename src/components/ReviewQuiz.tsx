@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import { useAuth } from '../hooks/useAuth';
 import './ReviewQuiz.css';
 
 interface Lesson {
@@ -26,6 +27,7 @@ const slugify = (str: string) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').r
 
 const ReviewQuiz: React.FC = () => {
   const { topic } = useParams<{ topic: string }>();
+  const { user } = useAuth();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [result, setResult] = useState<Result | null>(null);
@@ -35,7 +37,7 @@ const ReviewQuiz: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
-    if (!topic) return;
+    if (!topic || !user) return;
     const fetchData = async () => {
       setLoading(true);
       setError(null);
@@ -54,23 +56,42 @@ const ReviewQuiz: React.FC = () => {
       }
       setLesson(lessonData);
       // Fetch quiz
-      const { data: quizData, error: quizErr } = await supabase.from('quizzes').select('*').eq('lesson_id', lessonData.id).single();
-      if (quizErr || !quizData) {
+      const { data: quizData, error: quizErr } = await supabase.from('quizzes').select('*').eq('lesson_id', lessonData.id);
+      if (quizErr || !quizData || quizData.length === 0) {
         setError('Quiz not found.');
         setLoading(false);
         return;
       }
-      setQuiz(quizData);
-      // Fetch result
-      const { data: resultData } = await supabase.from('results').select('*').eq('quiz_id', quizData.id).single();
-      setResult(resultData || null);
-      // Fetch PDF URL
-      const { data: pdfData } = await supabase.from('pdfs').select('pdf_url').eq('quiz_id', quizData.id).single();
-      setPdfUrl(pdfData?.pdf_url || null);
+      setQuiz(quizData[0]);
+      // Fetch result for this user and quiz
+      const { data: resultData, error: resultErr } = await supabase
+        .from('results')
+        .select('*')
+        .eq('quiz_id', quizData[0].id)
+        .eq('user_id', user.id);
+      
+      if (resultErr) {
+        console.error('Error fetching result:', resultErr);
+      }
+      
+      setResult(resultData && resultData.length > 0 ? resultData[0] : null);
+      
+      // Fetch PDF URL for this user and quiz
+      const { data: pdfData, error: pdfErr } = await supabase
+        .from('pdfs')
+        .select('pdf_url')
+        .eq('quiz_id', quizData[0].id)
+        .eq('user_id', user.id);
+      
+      if (pdfErr) {
+        console.error('Error fetching PDF:', pdfErr);
+      }
+      
+      setPdfUrl(pdfData && pdfData.length > 0 ? pdfData[0].pdf_url : null);
       setLoading(false);
     };
     fetchData();
-  }, [topic]);
+  }, [topic, user]);
 
   if (loading) return <div className="reviewquiz-root">Loading...</div>;
   if (error) return <div className="reviewquiz-root error">{error}</div>;

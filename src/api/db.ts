@@ -37,100 +37,181 @@ export interface Pdf {
 }
 
 // LESSONS
-export async function createLesson(title: string, description: string, topic: string, userId: string) {
-  console.log('Creating lesson with data:', { title, description, topic, userId });
-  const result = await supabase.from('lessons').insert([{ 
-    title, 
-    description, 
-    topic, 
-    created_by: userId 
-  }]).select().single();
-  console.log('Lesson creation result:', result);
-  return result;
-}
+export const createLesson = async (title: string, description: string, topic: string, userId: string) => {
+  const { data, error } = await supabase
+    .from('lessons')
+    .insert([{ title, description, topic, created_by: userId }])
+    .select()
+    .single();
 
-export async function getLessons() {
-  const result = await supabase.from('lessons').select('*');
-  console.log('Get lessons result:', result);
-  return result;
-}
+  if (error) {
+    console.error('Error creating lesson:', error);
+    return { data: null, error };
+  }
 
-export async function getLessonsByUser(userId: string) {
-  const result = await supabase.from('lessons').select('*').eq('created_by', userId);
-  console.log('Get lessons by user result:', result);
-  return result;
-}
+  return { data, error: null };
+};
+
+export const getLessons = async () => {
+  const { data, error } = await supabase
+    .from('lessons')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error getting lessons:', error);
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
+
+export const getLessonsByUser = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('lessons')
+    .select('*')
+    .eq('created_by', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error getting lessons by user:', error);
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
 
 // QUIZZES
-export async function createQuiz(lessonId: string, title: string, questions: any) {
-  console.log('Creating quiz with data:', { lessonId, title, questions });
-  const result = await supabase.from('quizzes').insert([{ 
-    lesson_id: lessonId, 
-    title, 
-    questions 
-  }]).select().single();
-  console.log('Quiz creation result:', result);
-  return result;
-}
+export const createQuiz = async (lessonId: string, title: string, questions: any) => {
+  const { data, error } = await supabase
+    .from('quizzes')
+    .insert([{ lesson_id: lessonId, title, questions }])
+    .select()
+    .single();
 
-export async function getQuizzes(lessonId: string) {
-  const result = await supabase.from('quizzes').select('*').eq('lesson_id', lessonId);
-  console.log('Get quizzes result:', result);
-  return result;
-}
+  if (error) {
+    console.error('Error creating quiz:', error);
+    return { data: null, error };
+  }
 
-export async function getQuizById(quizId: string) {
-  const result = await supabase.from('quizzes').select('*').eq('id', quizId).single();
-  console.log('Get quiz by ID result:', result);
-  return result;
-}
+  return { data, error: null };
+};
+
+export const getQuizzes = async () => {
+  const { data, error } = await supabase
+    .from('quizzes')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error getting quizzes:', error);
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
+
+export const getQuizById = async (quizId: string) => {
+  const { data, error } = await supabase
+    .from('quizzes')
+    .select('*')
+    .eq('id', quizId)
+    .single();
+
+  if (error) {
+    console.error('Error getting quiz by ID:', error);
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
 
 // RESULTS
-export async function createResult(userId: string, quizId: string, answers: any, score: number) {
-  console.log('Creating result with data:', { userId, quizId, answers, score });
-  const result = await supabase.from('results').insert([{ 
-    user_id: userId, 
-    quiz_id: quizId, 
-    answers, 
-    score 
-  }]).select().single();
-  console.log('Result creation result:', result);
-  return result;
-}
+export const createResult = async (userId: string, quizId: string, answers: any, score: number) => {
+  const { data, error } = await supabase
+    .from('results')
+    .insert([{ user_id: userId, quiz_id: quizId, answers, score }])
+    .select()
+    .single();
 
-export async function getResults(userId: string) {
-  const result = await supabase.from('results').select('*').eq('user_id', userId);
-  console.log('Get results result:', result);
-  return result;
-}
+  if (error) {
+    console.error('Error creating result:', error);
+    return { data: null, error };
+  }
 
-export async function getResultByQuiz(userId: string, quizId: string) {
-  const result = await supabase.from('results').select('*').eq('user_id', userId).eq('quiz_id', quizId).single();
-  console.log('Get result by quiz result:', result);
-  return result;
-}
+  return { data, error: null };
+};
+
+export const getResults = async () => {
+  const { data, error } = await supabase
+    .from('results')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error getting results:', error);
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
+
+export const getResultByQuiz = async (quizId: string) => {
+  const { data, error } = await supabase
+    .from('results')
+    .select('*')
+    .eq('quiz_id', quizId)
+    .single();
+
+  if (error) {
+    console.error('Error getting result by quiz:', error);
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
 
 // PDFS
-export async function savePdfRecord(userId: string, quizId: string, pdfUrl: string, filename: string) {
-  console.log('Saving PDF record with data:', { userId, quizId, pdfUrl, filename });
-  const result = await supabase.from('pdfs').insert([{ 
-    user_id: userId, 
-    quiz_id: quizId, 
-    pdf_url: pdfUrl,
-    filename 
-  }]).select().single();
-  console.log('PDF record creation result:', result);
-  return result;
-}
+export const savePdfRecord = async (userId: string, quizId: string, pdfUrl: string, filename: string) => {
+  const { data, error } = await supabase
+    .from('pdfs')
+    .insert([{ user_id: userId, quiz_id: quizId, pdf_url: pdfUrl, filename }])
+    .select()
+    .single();
 
-export async function getPdfs(userId: string) {
-  const result = await supabase.from('pdfs').select('*').eq('user_id', userId);
-  console.log('Get PDFs result:', result);
-  return result;
-}
+  if (error) {
+    console.error('Error saving PDF record:', error);
+    return { data: null, error };
+  }
 
-export async function getPdfByQuiz(userId: string, quizId: string) {
-  const result = await supabase.from('pdfs').select('*').eq('user_id', userId).eq('quiz_id', quizId).single();
-  console.log('Get PDF by quiz result:', result);
-  return result;
-} 
+  return { data, error: null };
+};
+
+export const getPdfs = async () => {
+  const { data, error } = await supabase
+    .from('pdfs')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error getting PDFs:', error);
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+};
+
+export const getPdfByQuiz = async (quizId: string) => {
+  const { data, error } = await supabase
+    .from('pdfs')
+    .select('*')
+    .eq('quiz_id', quizId)
+    .single();
+
+  if (error) {
+    console.error('Error getting PDF by quiz:', error);
+    return { data: null, error };
+  }
+
+  return { data, error: null };
+}; 

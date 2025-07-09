@@ -65,7 +65,7 @@ export const Navbar: React.FC = () => {
 
           <div className="navbar-auth desktop-only">
             {user ? (
-              <UserProfileDropdown user={user} onSignOut={signOut} />
+              <UserProfileDropdown onSignOut={signOut} />
             ) : (
               <div className="navbar-auth-btns">
                 <button

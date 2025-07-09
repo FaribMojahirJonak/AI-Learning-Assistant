@@ -23,9 +23,13 @@ export default function QuizManager({ lessonId }: QuizManagerProps) {
   const [success, setSuccess] = useState('');
 
   const fetchQuizzes = async () => {
-    const { data, error } = await getQuizzes(lessonId);
+    const { data, error } = await getQuizzes();
     if (error) setError(error.message);
-    else setQuizzes(data || []);
+    else {
+      // Filter quizzes for this specific lesson
+      const lessonQuizzes = data?.filter(quiz => quiz.lesson_id === lessonId) || [];
+      setQuizzes(lessonQuizzes);
+    }
   };
 
   useEffect(() => {
